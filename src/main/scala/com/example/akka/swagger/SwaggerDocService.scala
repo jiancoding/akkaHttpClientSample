@@ -1,10 +1,9 @@
 package com.example.akka.swagger
 
-import com.github.swagger.akka.{SwaggerHttpService, SwaggerSite}
-import com.github.swagger.akka.model.Info
 import com.example.akka.add.AddService
 import com.example.akka.hello.HelloService
-import io.swagger.models.ExternalDocs
+import com.github.swagger.akka.model.Info
+import com.github.swagger.akka.{SwaggerHttpService, SwaggerSite}
 import io.swagger.models.auth.BasicAuthDefinition
 
 object SwaggerDocService extends SwaggerHttpService with SwaggerSite {
@@ -13,7 +12,6 @@ object SwaggerDocService extends SwaggerHttpService with SwaggerSite {
   override val info = Info(version = "1.0")
   override val apiDocsPath = "api-docs"
   override val basePath = "/"
-  override val externalDocs = Some(new ExternalDocs("Core Docs", "http://acme.com/docs"))
   override val securitySchemeDefinitions = Map("basicAuth" -> new BasicAuthDefinition())
   override val unwantedDefinitions = Seq("Function1", "Function1RequestContextFutureRouteResult")
 }
