@@ -22,7 +22,6 @@ unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
 libraryDependencies ++= Seq(
   "io.swagger"                    %   "swagger-jaxrs"                   % "1.5.16",
   "com.github.swagger-akka-http" %%   "swagger-akka-http"               % "0.11.0",
-  "co.pragmati"                  %% "swagger-ui-akka-http"              % "1.1.0", //library for swagger UI
 
   //akka-stream-kafka
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.16",
