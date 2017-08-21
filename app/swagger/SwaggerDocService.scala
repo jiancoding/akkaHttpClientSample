@@ -1,15 +1,15 @@
-package com.example.akka.swagger
+package swagger
 
-import com.example.akka.add.AddService
-import com.example.akka.hello.HelloService
+import add.AddService
 import com.github.swagger.akka.model.Info
 import com.github.swagger.akka.{SwaggerHttpService, SwaggerSite}
+import hello.HelloService
 import io.swagger.models.auth.BasicAuthDefinition
 
 object SwaggerDocService extends SwaggerHttpService with SwaggerSite {
   override val apiClasses = Set(classOf[AddService], classOf[HelloService])
   override val host = "localhost:12345"
-  override val info = Info(version = "1.0", title = "Swagger-akka-http-sample-api", description = "good description")
+  override val info = Info(version = "1.0", title = "stock-data-api", description = "description")
   override val apiDocsPath = "api-docs"
   override val basePath = "/"
   override val securitySchemeDefinitions = Map("basicAuth" -> new BasicAuthDefinition())

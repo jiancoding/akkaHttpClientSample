@@ -1,12 +1,13 @@
-package com.example.akka.hello
+package hello
 
 import javax.ws.rs.Path
+
 import akka.actor.ActorRef
 import akka.http.scaladsl.server.Directives
 import akka.pattern.ask
 import akka.util.Timeout
-import com.example.akka.DefaultJsonFormats
-import com.example.akka.hello.HelloActor._
+import hello.HelloActor.{AnonymousHello, Greeting, Hello}
+import helper.DefaultJsonFormats
 import io.swagger.annotations._
 
 import scala.concurrent.duration._

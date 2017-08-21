@@ -1,4 +1,4 @@
-name := "swagger-akka-http-sample"
+name := "stock-data"
 
 scalaVersion := "2.12.3"
 
@@ -8,6 +8,9 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 //val akkaVersion = "2.5.4"
 val akkaVersion = "2.4.19"
 val akkaHttpVersion = "10.0.9"
+
+//setting source folder
+unmanagedSourceDirectories in Compile += (baseDirectory( _ / "app" )).value
 
 libraryDependencies ++= Seq(
   "io.swagger" % "swagger-jaxrs" % "1.5.16",

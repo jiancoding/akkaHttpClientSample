@@ -1,14 +1,14 @@
-package com.example.akka
+package main
 
+import add.{AddActor, AddService}
 import akka.actor.{ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.RouteConcatenation
 import akka.stream.ActorMaterializer
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
-import com.example.akka.add.{AddActor, AddService}
-import com.example.akka.hello.{HelloActor, HelloService}
-import com.example.akka.swagger.SwaggerDocService
 import com.github.swagger.akka.SwaggerSite
+import hello.{HelloActor, HelloService}
+import swagger.SwaggerDocService
 
 object Rest extends App with RouteConcatenation with SwaggerSite {
   implicit val system = ActorSystem("akka-http-sample")

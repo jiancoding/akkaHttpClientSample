@@ -1,4 +1,4 @@
-package com.example.akka.add
+package add
 
 import akka.actor.{Actor, ActorLogging}
 

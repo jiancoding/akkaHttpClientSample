@@ -1,7 +1,6 @@
-package com.example.akka.hello
+package hello
 
 import akka.actor.{Actor, ActorLogging}
-import akka.stream.actor.ActorPublisherMessage.Request
 
 object HelloActor {
   case object AnonymousHello
