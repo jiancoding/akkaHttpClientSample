@@ -1,21 +1,13 @@
 package producer
 
-import akka.actor.ActorSystem
-import akka.kafka.ProducerSettings
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecord, RecordMetadata}
-import org.apache.kafka.common.serialization.{ByteArraySerializer, StringSerializer}
 
 object dataProducer extends LazyLogging{
 
+  //todo 1. config and build kafkaProducer? using Actor System? 2. build ProducerRecord with specific topic name
   implicit class InternalProducer(kafkaProducer: KafkaProducer[Nothing, GenericRecord]) {
-    implicit val system = ActorSystem("StockDataProducerFlow")
-
-    val keySerializer = new ByteArraySerializer
-    val valueSerializer = new StringSerializer
-    val topic = "topic1"
-    val producerSettings = ProducerSettings(system, keySerializer, valueSerializer)
 
     def send(recrods: Seq[ProducerRecord[Nothing, GenericRecord]]) = {
       recrods.foreach(sendOneReocrd)
@@ -32,9 +24,7 @@ object dataProducer extends LazyLogging{
           }
         }
       }
-
       kafkaProducer.send(record, callback)
     }
-
   }
 }

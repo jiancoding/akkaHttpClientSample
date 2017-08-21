@@ -24,20 +24,20 @@ libraryDependencies ++= Seq(
   "com.github.swagger-akka-http" %%   "swagger-akka-http"               % "0.11.0",
 
   //akka-stream-kafka
-  "com.typesafe.akka" %% "akka-stream-kafka" % "0.16",
-  "io.confluent" % "kafka-schema-registry-client" % "3.2.1",
-  "io.confluent" % "common-config" % "3.2.1",
-  "io.confluent" % "kafka-avro-serializer" % "3.2.1",
+  "com.typesafe.akka"            %% "akka-stream-kafka"                 % "0.16",
+  "io.confluent"                  % "kafka-schema-registry-client"      % "3.2.1",
+  "io.confluent"                  % "common-config"                     % "3.2.1",
+  "io.confluent"                  % "kafka-avro-serializer"             % "3.2.1",
 
   //akka http
-  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-  "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-  "ch.megard" %% "akka-http-cors" % "0.2.1",
+  "com.typesafe.akka"             %% "akka-http"                        % akkaHttpVersion,
+  "com.typesafe.akka"             %% "akka-http-spray-json"             % akkaHttpVersion,
+  "com.typesafe.akka"             %% "akka-actor"                       % akkaVersion,
+  "com.typesafe.akka"             %% "akka-stream"                      % akkaVersion,
+  "com.typesafe.akka"             %% "akka-slf4j"                       % akkaVersion,
+  "ch.megard"                     %% "akka-http-cors"                   % "0.2.1",
 
-  "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
-
+  //log
+  "ch.qos.logback"                % "logback-classic"                   % "1.2.3",
+  "com.typesafe.scala-logging"    %% "scala-logging"                    % "3.7.2"
 )

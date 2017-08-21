@@ -24,6 +24,5 @@ object Rest extends App with RouteConcatenation with SwaggerSite {
       swaggerSiteRoute ~
       SwaggerDocService.routes)
 
-
   Http().bindAndHandle(routes, "0.0.0.0", 12345)
 }
