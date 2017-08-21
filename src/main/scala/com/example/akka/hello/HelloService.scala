@@ -1,22 +1,19 @@
 package com.example.akka.hello
 
 import javax.ws.rs.Path
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
-
 import akka.actor.ActorRef
 import akka.http.scaladsl.server.Directives
 import akka.pattern.ask
 import akka.util.Timeout
-import io.swagger.annotations._
-
 import com.example.akka.DefaultJsonFormats
 import com.example.akka.hello.HelloActor._
+import io.swagger.annotations._
+
+import scala.concurrent.duration._
 
 @Api(value = "/hello", produces = "application/json")
 @Path("/hello")
-class HelloService(hello: ActorRef)(implicit executionContext: ExecutionContext)
+class HelloService(hello: ActorRef)
   extends Directives with DefaultJsonFormats {
 
   implicit val timeout = Timeout(2.seconds)
@@ -28,6 +25,8 @@ class HelloService(hello: ActorRef)(implicit executionContext: ExecutionContext)
     
   @ApiOperation(value = "Return Hello greeting", nickname = "anonymousHello", httpMethod = "GET", response = classOf[Greeting])
   @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Return Hello all times"),
+    new ApiResponse(code = 400, message = "Bad request"),
     new ApiResponse(code = 500, message = "Internal server error")
   ))
   def getHello =
