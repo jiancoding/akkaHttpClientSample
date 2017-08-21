@@ -4,19 +4,25 @@ scalaVersion := "2.12.3"
 
 resolvers += Resolver.sonatypeRepo("releases")
 resolvers += Resolver.sonatypeRepo("snapshots")
+resolvers += "Sonatype OSS Releases" at "https://oss.sonatype.org/content/repositories/releases"
+
+resolvers += "confluent" at "http://packages.confluent.io/maven/"
+resolvers += "prometheus" at "https://mvnrepository.com/artifact/io.prometheus/"
+
 
 //val akkaVersion = "2.5.4"
 val akkaVersion = "2.4.19"
 val akkaHttpVersion = "10.0.9"
 
-//setting source folder
-unmanagedSourceDirectories in Compile += (baseDirectory( _ / "app" )).value
+//setting source and resource directory
+unmanagedSourceDirectories in Compile += baseDirectory( _ / "app" ).value
+unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
+
 
 libraryDependencies ++= Seq(
-  "io.swagger" % "swagger-jaxrs" % "1.5.16",
-
-  "com.github.swagger-akka-http" %% "swagger-akka-http" % "0.11.0",
-  "co.pragmati" %% "swagger-ui-akka-http" % "1.1.0", //library for swagger UI
+  "io.swagger"                    %   "swagger-jaxrs"                   % "1.5.16",
+  "com.github.swagger-akka-http" %%   "swagger-akka-http"               % "0.11.0",
+  "co.pragmati"                  %% "swagger-ui-akka-http"              % "1.1.0", //library for swagger UI
 
   //akka-stream-kafka
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.16",
@@ -32,7 +38,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "ch.megard" %% "akka-http-cors" % "0.2.1",
 
-  "org.slf4j" % "slf4j-simple" % "1.7.25"
-//  "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0"
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
 
 )
