@@ -6,7 +6,7 @@ import org.apache.kafka.clients.producer.{Callback, KafkaProducer, ProducerRecor
 
 object dataProducer extends LazyLogging{
 
-  //todo 1. config and build kafkaProducer? using Actor System? 2. build ProducerRecord with specific topic name
+  //todo 1. build ProducerRecord with specific topic name
   implicit class InternalProducer(kafkaProducer: KafkaProducer[Nothing, GenericRecord]) {
 
     def send(recrods: Seq[ProducerRecord[Nothing, GenericRecord]]) = {

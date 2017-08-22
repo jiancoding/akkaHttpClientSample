@@ -18,6 +18,8 @@ val akkaHttpVersion = "10.0.9"
 unmanagedSourceDirectories in Compile += baseDirectory( _ / "app" ).value
 unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
 
+(sourceDirectories in Test) := Seq(new File("test"))
+
 
 libraryDependencies ++= Seq(
   "io.swagger"                    %   "swagger-jaxrs"                   % "1.5.16",
@@ -39,5 +41,20 @@ libraryDependencies ++= Seq(
 
   //log
   "ch.qos.logback"                % "logback-classic"                   % "1.2.3",
-  "com.typesafe.scala-logging"    %% "scala-logging"                    % "3.7.2"
+  "com.typesafe.scala-logging"    %% "scala-logging"                    % "3.7.2",
+
+  //test lib
+  "com.typesafe.akka"             %% "akka-http-testkit"                % akkaHttpVersion,
+//  "org.scalatest"                 %% "scalatest"                        % "2.2.6",
+  "org.scalamock"                 %% "scalamock-scalatest-support"      % "3.6.0"    % Test
+
+
+//  "io.confluent"                  % "kafka-schema-registry"             % "3.2.1"    % Test,
+//  "io.confluent"                  % "kafka-schema-registry"             % "3.2.1"    % Test classifier "tests",
+//  "com.typesafe.akka"             %% "akka-stream-testkit"              % "2.4.19"    % Test,
+//  "com.typesafe.akka"             %% "akka-http"                        % "10.0.9"   % Test,
+//  "com.typesafe.akka"             %% "akka-http-spray-json"             % "10.0.9"   % Test,
+//  "org.scalatestplus.play"        %% "scalatestplus-play"               % "3.1.1"    % Test,
+//  "org.scalamock"                 %% "scalamock-scalatest-support"      % "3.6.0"    % Test
+
 )
