@@ -20,15 +20,14 @@ object IntraDayModel extends LazyLogging{
                              dataType: Option[String],
                              apiKey: String)
 
-  case class IntraDayResponse(`Meta Data`: MetaData, timeSeries: Seq[TimeSeriesData])
+  case class IntraDayResponse(metaData: MetaData, timeSeries: Seq[TimeSeriesData])
 
-  case class MetaData(`1. Information`: String,
-                      `2. Symbol`: String,
-                      `3. Last Refreshed`: String,
-                      `4. Interval`: String,
-                      `5. Output Size`: String,
-                      `6. Time Zone`: String)
-
+  case class MetaData(information: String,
+                      symbol: String,
+                      lastRefreshed: String,
+                      interval: String,
+                      outputSize: String,
+                      timeZone: String)
 
   case class TimeSeriesData(open: String, high: String, low: String, close: String, volume: String)
 
@@ -49,7 +48,8 @@ object IntraDayModel extends LazyLogging{
         parsedMap("Meta Data")("5. Output Size").toString,
         parsedMap("Meta Data")("6. Time Zone").toString
       )
-      val pastMinTimeLine = getPastMin(DateTime.now, 5).map(formatTime)
+      val PAST_MIN = 5
+      val pastMinTimeLine = getPastMin(DateTime.now, PAST_MIN).map(formatTime)
 
       val data = pastMinTimeLine.map { timeSlot =>
         val timeSeriesDataMap = parsedMap("Time Series (1min)")(timeSlot).asInstanceOf[HashMap[String, String]]
@@ -83,9 +83,4 @@ object IntraDayModel extends LazyLogging{
   }
 
 }
-
-class IntraDay extends Actor with ActorLogging {
-  override def receive: Receive = ???
-}
-
 
