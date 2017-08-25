@@ -3,14 +3,19 @@ package client
 import akka.actor.{Actor, ActorLogging, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import akka.http.scaladsl.model.{HttpMethods, HttpRequest, HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import client.IntraDayModel.{IntraDayRequest, IntraDayResponse}
+import IntraDayModel.{IntraDayRequest, IntraDayResponse, getClass, _}
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
+import spray.json.JsValue
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import scala.io.Source
 
 
 class TimeSeriesIntraDayActor extends Actor with ActorLogging{
@@ -46,20 +51,26 @@ class TimeSeriesIntraDayActor extends Actor with ActorLogging{
         "interval" -> request.interval,
         "apikey" -> request.apiKey
       )
-      val url = createUrl(baseUrl, pMap)
-      val req = HttpRequest(HttpMethods.GET, url)
-      val resFuture = http.singleRequest(req)
 
-      val result = resFuture.flatMap { response =>
-        response.status match {
-          case StatusCodes.OK =>
-            Unmarshal(response.entity).to[IntraDayResponse]
-        }
-      }
+//      val url = createUrl(baseUrl, pMap)
+//      val req = HttpRequest(HttpMethods.GET, url)
+//      val resFuture = http.singleRequest(req)
 
-      val z = Await.result(result, 5.seconds)
-      log.info("z  ===== " + z)
-      z
+      //todo has to verify http response status
+
+
+//      val result = resFuture.flatMap { response =>
+//        response.status match {
+//          case StatusCodes.OK =>
+//            Unmarshal(response.entity).to[String]
+//        }
+//      }
+//      val z = Await.result(result, 10.seconds)
+//      log.info("z  ===== " + z)
+
+      val x = Source.fromResource("dynamicKey.json").getLines().mkString
+
+      deserializeToObj(x)
     }
   }
 

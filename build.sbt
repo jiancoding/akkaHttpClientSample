@@ -27,7 +27,7 @@ libraryDependencies ++= Seq(
 
   //akka-stream-kafka
   "com.typesafe.akka"            %% "akka-stream-kafka"                 % "0.16",
-  "io.confluent"                  % "kafka-schema-registry-client"      % "3.2.1",
+  "io.confluent"                  % "kafka-schema-registry-client"      % "3.2.1" exclude("org.slf4j", "slf4j-log4j12"),
   "io.confluent"                  % "common-config"                     % "3.2.1",
   "io.confluent"                  % "kafka-avro-serializer"             % "3.2.1",
 
@@ -38,6 +38,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"             %% "akka-stream"                      % akkaVersion,
   "com.typesafe.akka"             %% "akka-slf4j"                       % akkaVersion,
   "ch.megard"                     %% "akka-http-cors"                   % "0.2.1",
+  "com.github.nscala-time"        %% "nscala-time"                      % "2.16.0",
 
   //log
   "ch.qos.logback"                % "logback-classic"                   % "1.2.3",
