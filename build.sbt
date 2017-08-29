@@ -22,6 +22,7 @@ unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
 
 
 libraryDependencies ++= Seq(
+  "com.google.inject"             % "guice"                             % "3.0",
   "io.swagger"                    %   "swagger-jaxrs"                   % "1.5.16",
   "com.github.swagger-akka-http" %%   "swagger-akka-http"               % "0.11.0",
 
@@ -47,7 +48,9 @@ libraryDependencies ++= Seq(
   //test lib
   "com.typesafe.akka"             %% "akka-http-testkit"                % akkaHttpVersion,
 //  "org.scalatest"                 %% "scalatest"                        % "2.2.6",
-  "org.scalamock"                 %% "scalamock-scalatest-support"      % "3.6.0"    % Test
+  "org.scalamock"                 %% "scalamock-scalatest-support"      % "3.6.0"    % Test,
+  "org.mockito"                    % "mockito-core"                     % "1.9.5"    % Test
+
 
 
 //  "io.confluent"                  % "kafka-schema-registry"             % "3.2.1"    % Test,

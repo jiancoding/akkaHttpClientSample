@@ -7,6 +7,9 @@ import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import client.IntraDayModel.{IntraDayRequest, _}
+import javax.inject.Inject
+
+import com.typesafe.config.{Config, ConfigFactory}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -14,25 +17,24 @@ import scala.concurrent.duration._
 import scala.io.Source
 
 
-class TimeSeriesIntraDayActor extends Actor with ActorLogging{
+class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorLogging{
 
   implicit val system = ActorSystem()
-//  implicit val executor = system.dispatcher
   implicit val materializer = ActorMaterializer()
-
-  val baseUrl = "https://www.alphavantage.co/query?"
   val http = Http(context.system)
 
   override def receive: Receive = {
     case request: IntraDayRequest => {
-      val pMap = Map (
+
+      val paraMap = Map (
         "function" -> request.function,
         "symbol" -> request.symbol,
         "interval" -> request.interval,
         "apikey" -> request.apiKey
       )
+      val baseUrl = config.getString("alpha.vantage.base.url")
 
-      val url = createUrl(baseUrl, pMap)
+      val url = createUrl(baseUrl, paraMap)
       val req = HttpRequest(HttpMethods.GET, url)
       val resFuture = http.singleRequest(req)
 
@@ -44,8 +46,8 @@ class TimeSeriesIntraDayActor extends Actor with ActorLogging{
         }
       }
       val z = Await.result(result, 10.seconds)
-      val x = Source.fromResource("dynamicKey.json").getLines().mkString
-      deserializeToObj(x)
+//      val x = Source.fromResource("dynamicKey.json").getLines().mkString
+      deserializeToObj(z)
     }
   }
 

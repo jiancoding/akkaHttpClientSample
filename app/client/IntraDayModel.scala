@@ -1,11 +1,15 @@
 package client
 
-import akka.actor.{Actor, ActorLogging}
+import java.time.chrono.IsoChronology
+import java.util.TimeZone
+
+import constants.Properties._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.github.nscala_time.time.Imports._
 import com.typesafe.scalalogging.LazyLogging
+import org.joda.time.{Chronology, DateTimeZone}
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
 import scala.collection.immutable.HashMap
@@ -34,12 +38,9 @@ object IntraDayModel extends LazyLogging{
   def deserializeToObj(jsvalue: String): IntraDayResponse = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
-
     //todo might be better way https://stackoverflow.com/questions/17685508/jackson-deserialization-with-unknown-dynamic-properties
     val parsedMap = mapper.readValue(jsvalue, classOf[Map[String, Map[String, Any]]])
-
     try {
-      //populate IntraDayResponse object
       val metaData = MetaData(
         parsedMap("Meta Data")("1. Information").toString,
         parsedMap("Meta Data")("2. Symbol").toString,
@@ -48,8 +49,10 @@ object IntraDayModel extends LazyLogging{
         parsedMap("Meta Data")("5. Output Size").toString,
         parsedMap("Meta Data")("6. Time Zone").toString
       )
-      val PAST_MIN = 5
-      val pastMinTimeLine = getPastMin(DateTime.now, PAST_MIN).map(formatTime)
+
+      val easternNow = DateTime.now(DateTimeZone.forID("US/Eastern"))
+
+      val pastMinTimeLine = getPastMinOfTime(easternNow, PAST_MIN).map(formatTime)
 
       val data = pastMinTimeLine.map { timeSlot =>
         val timeSeriesDataMap = parsedMap("Time Series (1min)")(timeSlot).asInstanceOf[HashMap[String, String]]
@@ -68,7 +71,7 @@ object IntraDayModel extends LazyLogging{
     }
   }
 
-  def getPastMin(dateTime: DateTime, n: Int): Seq[DateTime] = {
+  def getPastMinOfTime(dateTime: DateTime, n: Int): Seq[DateTime] = {
     var list = new ListBuffer[DateTime]()
     list +=dateTime.second(0)
     for (a <- 1 until n) {
@@ -79,6 +82,8 @@ object IntraDayModel extends LazyLogging{
 
   def formatTime(dateTime: DateTime) = {
     val dtf: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
+
+
     dateTime.toString(dtf)
   }
 
