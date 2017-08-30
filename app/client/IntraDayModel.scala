@@ -1,15 +1,12 @@
 package client
 
-import java.time.chrono.IsoChronology
-import java.util.TimeZone
-
-import constants.Properties._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import com.github.nscala_time.time.Imports._
 import com.typesafe.scalalogging.LazyLogging
-import org.joda.time.{Chronology, DateTimeZone}
+import constants.Properties._
+import org.joda.time.DateTimeZone
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 
 import scala.collection.immutable.HashMap

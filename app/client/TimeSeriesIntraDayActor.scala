@@ -1,5 +1,7 @@
 package client
 
+import javax.inject.Inject
+
 import akka.actor.{Actor, ActorLogging, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
@@ -7,14 +9,11 @@ import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import client.IntraDayModel.{IntraDayRequest, _}
-import javax.inject.Inject
-
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.Config
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.io.Source
 
 
 class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorLogging{

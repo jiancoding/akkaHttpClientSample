@@ -15,10 +15,10 @@ val akkaVersion = "2.4.19"
 val akkaHttpVersion = "10.0.9"
 
 //setting source and resource directory
-unmanagedSourceDirectories in Compile += baseDirectory( _ / "app" ).value
-unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
-
-(sourceDirectories in Test) := Seq(new File("test"))
+scalaSource in Compile := baseDirectory.value / "app"
+resourceDirectory in Compile := baseDirectory.value / "resources"
+scalaSource in Test := baseDirectory.value / "test"
+resourceDirectory in Test := baseDirectory.value / "test-resources"
 
 
 libraryDependencies ++= Seq(
