@@ -64,7 +64,7 @@ object IntraDayModel extends LazyLogging{
       IntraDayResponse(metaData, data)
     } catch {
       case e: NoSuchElementException => logger.error("exception in deserialize response " + e)
-        null
+        IntraDayResponse(null, List())
     }
   }
 
@@ -79,8 +79,6 @@ object IntraDayModel extends LazyLogging{
 
   def formatTime(dateTime: DateTime) = {
     val dtf: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
-
-
     dateTime.toString(dtf)
   }
 

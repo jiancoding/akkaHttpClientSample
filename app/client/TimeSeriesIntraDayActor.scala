@@ -22,6 +22,8 @@ class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorL
   implicit val materializer = ActorMaterializer()
   val http = Http(context.system)
 
+  var abc = ""
+
   override def receive: Receive = {
     case request: IntraDayRequest => {
 
@@ -47,6 +49,7 @@ class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorL
       val z = Await.result(result, 10.seconds)
 //      val x = Source.fromResource("dynamicKey.json").getLines().mkString
       deserializeToObj(z)
+      abc = "success"
     }
   }
 

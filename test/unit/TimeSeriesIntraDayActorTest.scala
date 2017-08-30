@@ -30,8 +30,10 @@ class TimeSeriesIntraDayActorTest
 
     "client call test" in {
       val request = IntraDayRequest("TIME_SERIES_INTRADAY", "MSFT", "1min", None, None, "26WTKJT35SAZF6PU")
-
       testActor ! request
+      val result = testActor.underlyingActor.abc
+      result mustBe "success"
+
     }
 
 
