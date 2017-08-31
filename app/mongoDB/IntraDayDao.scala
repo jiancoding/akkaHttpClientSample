@@ -1,7 +1,10 @@
 package mongoDB
 
 import client.IntraDayModel.IntraDayResponse
+import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
+import reactivemongo.api.DB
+import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.{BSONArray, BSONDocument}
 
@@ -9,7 +12,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class IntraDayDao extends MongoDao with LazyLogging {
+class IntraDayDao@Inject()(db: DB) extends LazyLogging {
+  val collection: BSONCollection = db.collection("intraDay")
 
   def save(response: IntraDayResponse) = {
     val document1 = BSONDocument(
@@ -26,20 +30,20 @@ class IntraDayDao extends MongoDao with LazyLogging {
       }
     )
 
-    val writeResult: Future[WriteResult] = realDb.insert(document1)
+    val writeResult: Future[WriteResult] = collection.insert(document1)
+
     writeResult.onComplete {
       case Failure(e) =>
         logger.error("failed to write intraDay response record", e.printStackTrace())
       case Success(result) =>
-//        logger.info(s"successfully inserted document with result: $result")
+        logger.info(s"successfully inserted document with result: $result")
         println(s"successfully inserted document with result: $result")
     }
-    writeResult.map(_ => {})
   }
 
   def update(response: IntraDayResponse) = {
     //    val selector = BSONDocument("symbol" -> response.metaData.symbol)
-//    realDb.update(selector, document)
+    //    realDb.update(selector, document)
 
   }
 
