@@ -46,9 +46,8 @@ class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorL
             Unmarshal(response.entity).to[String]
         }
       }
-      val z = Await.result(result, 10.seconds)
-//      val x = Source.fromResource("dynamicKey.json").getLines().mkString
-      deserializeToObj(z)
+      val jsonString = Await.result(result, 10.seconds)
+      deserializeToObj(jsonString)
       abc = "success"
     }
   }

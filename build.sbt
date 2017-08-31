@@ -41,6 +41,9 @@ libraryDependencies ++= Seq(
   "ch.megard"                     %% "akka-http-cors"                   % "0.2.1",
   "com.github.nscala-time"        %% "nscala-time"                      % "2.16.0",
 
+  //mongoDb driver
+  "org.reactivemongo"             %% "reactivemongo"                    % "0.12.4",
+
   //log
   "ch.qos.logback"                % "logback-classic"                   % "1.2.3",
   "com.typesafe.scala-logging"    %% "scala-logging"                    % "3.7.2",
@@ -50,8 +53,6 @@ libraryDependencies ++= Seq(
 //  "org.scalatest"                 %% "scalatest"                        % "2.2.6",
   "org.scalamock"                 %% "scalamock-scalatest-support"      % "3.6.0"    % Test,
   "org.mockito"                    % "mockito-core"                     % "1.9.5"    % Test
-
-
 
 //  "io.confluent"                  % "kafka-schema-registry"             % "3.2.1"    % Test,
 //  "io.confluent"                  % "kafka-schema-registry"             % "3.2.1"    % Test classifier "tests",

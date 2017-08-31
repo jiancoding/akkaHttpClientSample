@@ -30,7 +30,7 @@ object IntraDayModel extends LazyLogging{
                       outputSize: String,
                       timeZone: String)
 
-  case class TimeSeriesData(open: String, high: String, low: String, close: String, volume: String)
+  case class TimeSeriesData(timeslot: String, open: String, high: String, low: String, close: String, volume: String)
 
   def deserializeToObj(jsvalue: String): IntraDayResponse = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
@@ -54,6 +54,7 @@ object IntraDayModel extends LazyLogging{
       val data = pastMinTimeLine.map { timeSlot =>
         val timeSeriesDataMap = parsedMap("Time Series (1min)")(timeSlot).asInstanceOf[HashMap[String, String]]
         TimeSeriesData(
+          timeSlot,
           timeSeriesDataMap("1. open"),
           timeSeriesDataMap("2. high"),
           timeSeriesDataMap("3. low"),
