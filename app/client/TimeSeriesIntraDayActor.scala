@@ -2,12 +2,13 @@ package client
 
 import javax.inject.Inject
 
-import akka.actor.{Actor, ActorLogging, ActorSystem}
+import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
+import client.IntraDayModel.IntraDayRe.IntraDayResponse
 import client.IntraDayModel.{IntraDayRequest, _}
 import com.typesafe.config.Config
 
@@ -16,17 +17,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 
-class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorLogging{
+class TimeSeriesIntraDayActor @Inject()(config:Config, actor: ActorRef) extends Actor with ActorLogging{
 
-  implicit val system = ActorSystem()
+//  implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
   val http = Http(context.system)
 
-  var abc = ""
+  var infoMessage = ""
 
   override def receive: Receive = {
     case request: IntraDayRequest => {
-
       val paraMap = Map (
         "function" -> request.function,
         "symbol" -> request.symbol,
@@ -34,11 +34,9 @@ class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorL
         "apikey" -> request.apiKey
       )
       val baseUrl = config.getString("alpha.vantage.base.url")
-
       val url = createUrl(baseUrl, paraMap)
       val req = HttpRequest(HttpMethods.GET, url)
       val resFuture = http.singleRequest(req)
-
 
       val result = resFuture.flatMap { response =>
         response.status match {
@@ -47,8 +45,9 @@ class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorL
         }
       }
       val jsonString = Await.result(result, 10.seconds)
-      deserializeToObj(jsonString)
-      abc = "success"
+      val intraDayResponse: IntraDayResponse = deserializeToObj(jsonString)
+      actor ! intraDayResponse
+      infoMessage = "success"
     }
   }
 
@@ -60,3 +59,5 @@ class TimeSeriesIntraDayActor @Inject()(config:Config) extends Actor with ActorL
     s"$baseUrl$subString"
   }
 }
+
+

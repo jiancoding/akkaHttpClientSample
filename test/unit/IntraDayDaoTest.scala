@@ -1,6 +1,7 @@
 package unit
 
-import client.IntraDayModel.{IntraDayResponse, MetaData, TimeSeriesData}
+import client.IntraDayModel.IntraDayRe.IntraDayResponse
+import client.IntraDayModel.{IntraDayRe, MetaData, TimeSeriesData}
 import helper.TestDBProvider
 import mongoDB.IntraDayDao
 import org.scalatest.mockito.MockitoSugar
@@ -21,6 +22,8 @@ class IntraDayDaoTest extends MustMatchers
       )
       testObject.save(response)
     }
+
+
 
   }
 

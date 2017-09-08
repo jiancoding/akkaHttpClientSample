@@ -1,5 +1,6 @@
 package client
 
+import client.IntraDayModel.IntraDayRe.IntraDayResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
@@ -21,7 +22,9 @@ object IntraDayModel extends LazyLogging{
                              dataType: Option[String],
                              apiKey: String)
 
-  case class IntraDayResponse(metaData: MetaData, timeSeries: Seq[TimeSeriesData])
+  case object IntraDayRe {
+    case class IntraDayResponse(metaData: MetaData, timeSeries: Seq[TimeSeriesData])
+  }
 
   case class MetaData(information: String,
                       symbol: String,

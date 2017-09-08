@@ -1,6 +1,7 @@
 package mongoDB
 
-import client.IntraDayModel.IntraDayResponse
+import client.IntraDayModel.IntraDayRe
+import client.IntraDayModel.IntraDayRe.IntraDayResponse
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
 import reactivemongo.api.DB
@@ -41,6 +42,7 @@ class IntraDayDao@Inject()(db: DB) extends LazyLogging {
     }
   }
 
+  //todo adding and testing more method;upate and delete
   def update(response: IntraDayResponse) = {
     //    val selector = BSONDocument("symbol" -> response.metaData.symbol)
     //    realDb.update(selector, document)

@@ -1,5 +1,6 @@
 package unit
 
+import client.IntraDayModel.IntraDayRe.IntraDayResponse
 import client.IntraDayModel._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpecLike}
