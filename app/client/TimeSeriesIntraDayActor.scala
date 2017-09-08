@@ -47,6 +47,7 @@ class TimeSeriesIntraDayActor @Inject()(config:Config, actor: ActorRef) extends 
       val jsonString = Await.result(result, 10.seconds)
       val intraDayResponse: IntraDayResponse = deserializeToObj(jsonString)
       actor ! intraDayResponse
+//      actor ! "success"
       infoMessage = "success"
     }
   }
