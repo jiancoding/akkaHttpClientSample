@@ -1,44 +1,24 @@
 package mongoDB
 
-import client.IntraDayModel.IntraDayRe
 import client.IntraDayModel.IntraDayRe.IntraDayResponse
-import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
-import reactivemongo.api.DB
+import model.IntraDay
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.WriteResult
-import reactivemongo.bson.{BSONArray, BSONDocument}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class IntraDayDao@Inject()(db: DB) extends LazyLogging {
-  val collection: BSONCollection = db.collection("intraDay")
+class IntraDayDao extends LazyLogging {
 
-  def save(response: IntraDayResponse) = {
-    val document1 = BSONDocument(
-      "symbol" -> response.metaData.symbol,
-      "TimeSeries" -> BSONArray {
-        BSONDocument(
-          "timestamp" -> response.timeSeries.head.timeslot,
-          "open" -> response.timeSeries.head.open,
-          "high" -> response.timeSeries.head.high,
-          "low" -> response.timeSeries.head.low,
-          "close" -> response.timeSeries.head.close,
-          "volume" -> response.timeSeries.head.volume
-        )
-      }
-    )
-
-    val writeResult: Future[WriteResult] = collection.insert(document1)
-
+  def save(collection: BSONCollection, intraDay: IntraDay) = {
+    val writeResult: Future[WriteResult] = collection.insert(intraDay)
     writeResult.onComplete {
       case Failure(e) =>
         logger.error("failed to write intraDay response record", e.printStackTrace())
       case Success(result) =>
         logger.info(s"successfully inserted document with result: $result")
-        println(s"successfully inserted document with result: $result")
     }
   }
 

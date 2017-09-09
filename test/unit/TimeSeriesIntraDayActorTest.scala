@@ -6,21 +6,26 @@ import client.IntraDayModel.IntraDayRe.IntraDayResponse
 import client.IntraDayModel.IntraDayRequest
 import client.{IntraDayProcessActor, TimeSeriesIntraDayActor}
 import com.typesafe.config.Config
+import helper.TestDBProvider
+import mongoDB.IntraDayDao
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
+
 import scala.concurrent.duration._
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, MustMatchers, WordSpecLike}
 
 class TimeSeriesIntraDayActorTest
   extends TestKit(ActorSystem("testSystem"))
     with MustMatchers
+  with TestDBProvider
     with WordSpecLike
     with MockitoSugar
     with BeforeAndAfterEach
     with BeforeAndAfterAll {
 
   val mockConfig = mock[Config]
-  val intraDayProcessActor = TestActorRef(new IntraDayProcessActor)
+  val mockIntraDay = mock[IntraDayDao]
+  val intraDayProcessActor = TestActorRef(new IntraDayProcessActor(mockIntraDay, db))
   val testObject = TestActorRef(new TimeSeriesIntraDayActor(mockConfig, testActor))
 
   override def beforeEach(): Unit = {

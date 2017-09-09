@@ -47,11 +47,9 @@ class TimeSeriesIntraDayActor @Inject()(config:Config, actor: ActorRef) extends 
       val jsonString = Await.result(result, 10.seconds)
       val intraDayResponse: IntraDayResponse = deserializeToObj(jsonString)
       actor ! intraDayResponse
-//      actor ! "success"
       infoMessage = "success"
     }
   }
-
 
   def createUrl(baseUrl: String, paraMap: Map[String, String]): String = {
     val subString = paraMap.filter(x => !x._2.isEmpty).map {
