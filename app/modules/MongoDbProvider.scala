@@ -15,11 +15,5 @@ class MongoDbProvider @Inject()(config: Config) extends Provider[DB]{
   val driver = new reactivemongo.api.MongoDriver
   val connection: MongoConnection = driver.connection(servers)
 
-//  def dbFromConnection(connection: MongoConnection): Future[BSONCollection] =
-//    connection.database(database).map(_.collection("intraDayCollection"))
-
-//  val dbFuture: Future[BSONCollection] = dbFromConnection(connection)
-//  val realDb: BSONCollection = Await.result(dbFuture, 10 seconds)
-
   override def get(): DB = Await.result(connection.database(database), 10 seconds)
 }

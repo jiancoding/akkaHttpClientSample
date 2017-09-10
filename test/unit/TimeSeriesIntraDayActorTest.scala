@@ -2,30 +2,29 @@ package unit
 
 import akka.actor.ActorSystem
 import akka.testkit.{TestActorRef, TestKit}
-import client.IntraDayModel.IntraDayRe.IntraDayResponse
-import client.IntraDayModel.IntraDayRequest
-import client.{IntraDayProcessActor, TimeSeriesIntraDayActor}
+import client.TimeSeriesIntraDayActor
 import com.typesafe.config.Config
 import helper.TestDBProvider
-import mongoDB.IntraDayDao
+import model.IntraDayData
+import model.IntraDayModel.IntraDayRequest
+import mongoDB.DBActor
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, MustMatchers, WordSpecLike}
 
 import scala.concurrent.duration._
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, MustMatchers, WordSpecLike}
 
 class TimeSeriesIntraDayActorTest
   extends TestKit(ActorSystem("testSystem"))
     with MustMatchers
-  with TestDBProvider
+    with TestDBProvider
     with WordSpecLike
     with MockitoSugar
     with BeforeAndAfterEach
     with BeforeAndAfterAll {
 
   val mockConfig = mock[Config]
-  val mockIntraDay = mock[IntraDayDao]
-  val intraDayProcessActor = TestActorRef(new IntraDayProcessActor(mockIntraDay, db))
+  val mockIntraDay = mock[DBActor]
   val testObject = TestActorRef(new TimeSeriesIntraDayActor(mockConfig, testActor))
 
   override def beforeEach(): Unit = {
@@ -38,10 +37,8 @@ class TimeSeriesIntraDayActorTest
   "TimeSeriesIntraDayActorTest" must {
     "client call test" in {
       val request = IntraDayRequest("TIME_SERIES_INTRADAY", "MSFT", "1min", None, None, "26WTKJT35SAZF6PU")
-      val result = testObject ! request
-      val mess = testObject.underlyingActor.infoMessage
-      mess mustBe "success"
-      expectMsg(15 seconds, IntraDayResponse(null, List())) //pass after 4pm
+      testObject ! request
+      expectMsg(15 seconds, (IntraDayData(null, List()), "intraDay")) //pass after 4pm
     }
 
   }

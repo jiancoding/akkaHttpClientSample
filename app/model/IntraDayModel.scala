@@ -1,6 +1,5 @@
-package client
+package model
 
-import client.IntraDayModel.IntraDayRe.IntraDayResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
@@ -22,9 +21,8 @@ object IntraDayModel extends LazyLogging{
                              dataType: Option[String],
                              apiKey: String)
 
-  case object IntraDayRe {
-    case class IntraDayResponse(metaData: MetaData, timeSeries: Seq[TimeSeriesData])
-  }
+  case class IntraDayResponse(metaData: MetaData,
+                              timeSeries: Seq[TimeSeriesData])
 
   case class MetaData(information: String,
                       symbol: String,
@@ -35,28 +33,17 @@ object IntraDayModel extends LazyLogging{
 
   case class TimeSeriesData(timeslot: String, open: String, high: String, low: String, close: String, volume: String)
 
-  def deserializeToObj(jsvalue: String): IntraDayResponse = {
+  //todo might be better way https://stackoverflow.com/questions/17685508/jackson-deserialization-with-unknown-dynamic-properties
+  def deserializeToIntraDayData(jsvalue: String): IntraDayData = {
     val mapper = new ObjectMapper() with ScalaObjectMapper
     mapper.registerModule(DefaultScalaModule)
-    //todo might be better way https://stackoverflow.com/questions/17685508/jackson-deserialization-with-unknown-dynamic-properties
     val parsedMap = mapper.readValue(jsvalue, classOf[Map[String, Map[String, Any]]])
     try {
-      val metaData = MetaData(
-        parsedMap("Meta Data")("1. Information").toString,
-        parsedMap("Meta Data")("2. Symbol").toString,
-        parsedMap("Meta Data")("3. Last Refreshed").toString,
-        parsedMap("Meta Data")("4. Interval").toString,
-        parsedMap("Meta Data")("5. Output Size").toString,
-        parsedMap("Meta Data")("6. Time Zone").toString
-      )
-
       val easternNow = DateTime.now(DateTimeZone.forID("US/Eastern"))
-
       val pastMinTimeLine = getPastMinOfTime(easternNow, PAST_MIN).map(formatTime)
-
-      val data = pastMinTimeLine.map { timeSlot =>
+      val timeSeriesData = pastMinTimeLine.map { timeSlot =>
         val timeSeriesDataMap = parsedMap("Time Series (1min)")(timeSlot).asInstanceOf[HashMap[String, String]]
-        TimeSeriesData(
+        TimeSeries(
           timeSlot,
           timeSeriesDataMap("1. open"),
           timeSeriesDataMap("2. high"),
@@ -65,10 +52,11 @@ object IntraDayModel extends LazyLogging{
           timeSeriesDataMap("5. volume")
         )
       }
-      IntraDayResponse(metaData, data)
+      IntraDayData(parsedMap("Meta Data")("2. Symbol").toString, timeSeriesData)
     } catch {
       case e: NoSuchElementException => logger.error("exception in deserialize response " + e)
-        IntraDayResponse(null, List())
+        IntraDayData(null, List()) //for testing for now
+//        throw e
     }
   }
 

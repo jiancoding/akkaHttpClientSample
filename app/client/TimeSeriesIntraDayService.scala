@@ -7,7 +7,7 @@ import akka.http.scaladsl.server.Directives
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import akka.util.Timeout
-import client.IntraDayModel.IntraDayRequest
+import model.IntraDayModel.IntraDayRequest
 import hello.HelloActor.{Greeting, Hello}
 
 import scala.concurrent.Future

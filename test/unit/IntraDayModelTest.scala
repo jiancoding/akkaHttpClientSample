@@ -1,7 +1,7 @@
 package unit
 
-import client.IntraDayModel.IntraDayRe.IntraDayResponse
-import client.IntraDayModel._
+import model.IntraDayData
+import model.IntraDayModel._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, WordSpecLike}
 
@@ -15,9 +15,9 @@ class IntraDayModelTest extends MustMatchers
   "IntraDayModelTest" must {
     "deserialize to IntraDayResponse" in {
       val jsonString = Source.fromResource("dynamicKey.json").getLines().mkString
-      val result = deserializeToObj(jsonString)
+      val result = deserializeToIntraDayData(jsonString)
 
-      result mustBe an[IntraDayResponse]
+      result mustBe an[IntraDayData]
     }
   }
 

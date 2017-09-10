@@ -8,22 +8,18 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import client.IntraDayModel.IntraDayRe.IntraDayResponse
-import client.IntraDayModel.{IntraDayRequest, _}
 import com.typesafe.config.Config
+import model.IntraDayModel.{IntraDayRequest, _}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-
 class TimeSeriesIntraDayActor @Inject()(config:Config, actor: ActorRef) extends Actor with ActorLogging{
 
-//  implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
   val http = Http(context.system)
-
-  var infoMessage = ""
+  val collectionName = "intraDay"
 
   override def receive: Receive = {
     case request: IntraDayRequest => {
@@ -45,9 +41,8 @@ class TimeSeriesIntraDayActor @Inject()(config:Config, actor: ActorRef) extends 
         }
       }
       val jsonString = Await.result(result, 10.seconds)
-      val intraDayResponse: IntraDayResponse = deserializeToObj(jsonString)
-      actor ! intraDayResponse
-      infoMessage = "success"
+      val intraDayData = deserializeToIntraDayData(jsonString)
+      actor ! (intraDayData, collectionName)
     }
   }
 
@@ -58,5 +53,3 @@ class TimeSeriesIntraDayActor @Inject()(config:Config, actor: ActorRef) extends 
     s"$baseUrl$subString"
   }
 }
-
-
