@@ -21,16 +21,6 @@ object IntraDayModel extends LazyLogging{
                              dataType: Option[String],
                              apiKey: String)
 
-  case class IntraDayResponse(metaData: MetaData,
-                              timeSeries: Seq[TimeSeriesData])
-
-  case class MetaData(information: String,
-                      symbol: String,
-                      lastRefreshed: String,
-                      interval: String,
-                      outputSize: String,
-                      timeZone: String)
-
   case class TimeSeriesData(timeslot: String, open: String, high: String, low: String, close: String, volume: String)
 
   //todo might be better way https://stackoverflow.com/questions/17685508/jackson-deserialization-with-unknown-dynamic-properties

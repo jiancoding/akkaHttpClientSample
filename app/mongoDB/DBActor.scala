@@ -4,38 +4,42 @@ import akka.actor.Actor
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
 import model.{DbRequest, IntraDayData}
-import model.IntraDayModel.IntraDayResponse
 import reactivemongo.api.DB
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.commands.WriteResult
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
 
 class DBActor @Inject()(db: DB) extends Actor with LazyLogging {
 
-  def receive: Receive =  {
+  def receive: Receive = {
     case DbRequest(data, collectionName, requestType) =>
       (requestType, data) match {
-        case ("save", data: IntraDayData) => save(collectionName, data)
+        case ("save", data: IntraDayData) =>
+          save(collectionName, data)
+        case (_, _) => logger.error("didn't get correct matching DbRequest")
 
       }
   }
 
   def save(collectionName: String, data: IntraDayData) = {
     val collection: BSONCollection = db.collection("intraDay")
-    val writeResult: Future[WriteResult] = collection.insert(data)
-    writeResult.onComplete {
-      case Failure(e) =>
-        logger.error("failed to write intraDay response record", e.printStackTrace())
-      case Success(result) =>
-        logger.info(s"successfully inserted document with result: $result")
+    val originalSender = sender()
+    val futureWriteResult: Future[WriteResult] = collection.insert(data)
+    futureWriteResult.map {
+      case response if response.ok =>
+        originalSender ! s"successfully inserted document $data"
+        logger.info(s"successfully inserted document")
+      case response => logger.error("write error: ", response.writeErrors.head)
+    }.recover{
+      //todo handle MongoError['No primary node is available!
+      case e: Exception => originalSender ! s"exception: $e"
     }
   }
 
   //todo adding and testing more method;upate and delete
-  def update(response: IntraDayResponse) = {
+  def update(response: IntraDayData) = {
     //    val selector = BSONDocument("symbol" -> response.metaData.symbol)
     //    realDb.update(selector, document)
 
@@ -44,6 +48,7 @@ class DBActor @Inject()(db: DB) extends Actor with LazyLogging {
 }
 
 
+//** example of saving generic type data
 //case class EventOperation[T <: Event](eventType: T)
 //
 //class OperationActor extends Actor {
