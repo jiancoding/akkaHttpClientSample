@@ -13,7 +13,7 @@ import scala.concurrent.Future
 
 class DBActor @Inject()(db: DB) extends Actor with LazyLogging {
 
-  def receive: Receive = {
+  override def receive: Receive = {
     case DbRequest(data, collectionName, requestType) =>
       (requestType, data) match {
         case ("save", data: IntraDayData) =>
@@ -21,6 +21,7 @@ class DBActor @Inject()(db: DB) extends Actor with LazyLogging {
         case (_, _) => logger.error("didn't get correct matching DbRequest")
 
       }
+    case _ => sender() ! "malFormatted request!!"
   }
 
   def save(collectionName: String, data: IntraDayData) = {

@@ -29,13 +29,21 @@ class DBActorTest extends TestKit(ActorSystem("testSystem"))
     "saveing correct record" in {
       val intraDayData = IntraDayData("symbol1-IntraDayDaoTest", List())
       val request = DbRequest(intraDayData, "DBActorTest", "save")
+
       val futureResponse = testObject ? request
-      //has to wait since it's asynchronous saving
       val responseMessage = Await.result(futureResponse, 5 seconds)
 
       responseMessage.asInstanceOf[String] must include ("successfully inserted")
     }
 
+    "handling bad format record" in {
+      val malFormattedRequest = "abc"
+
+      val futureResponse = testObject ? malFormattedRequest
+      val responseMessage = Await.result(futureResponse, 5 seconds)
+
+      responseMessage.asInstanceOf[String] must include ("malFormatted request")
+    }
 
   }
 
