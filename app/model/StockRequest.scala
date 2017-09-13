@@ -1,8 +1,9 @@
 package model
 
-/**
-  * Created by dev1 on 9/10/17.
-  */
-class StockRequest {
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import spray.json.DefaultJsonProtocol
 
+object StockRequest extends DefaultJsonProtocol with SprayJsonSupport {
+  case class StockRequest(function: String, symbol: String, interval: String)
+  implicit val stockRequestFormat = jsonFormat3(StockRequest)
 }

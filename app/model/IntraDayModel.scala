@@ -19,7 +19,7 @@ object IntraDayModel extends LazyLogging{
                              interval: String,
                              outputSize: Option[String],
                              dataType: Option[String],
-                             apiKey: String)
+                             apiKey: Option[String])
 
   case class TimeSeriesData(timeslot: String, open: String, high: String, low: String, close: String, volume: String)
 

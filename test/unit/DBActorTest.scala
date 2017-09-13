@@ -21,7 +21,7 @@ class DBActorTest extends TestKit(ActorSystem("testSystem"))
   with TestDBProvider {
 
   implicit val timeout = Timeout(5.seconds)
-  val testObject = TestActorRef(new DBActor(db))
+  val testObject1 = TestActorRef(new DBActor(db))
   val collection: BSONCollection = db.collection("intraDay")
 
   "IntraDayDaoTest" must {
@@ -30,7 +30,7 @@ class DBActorTest extends TestKit(ActorSystem("testSystem"))
       val intraDayData = IntraDayData("symbol1-IntraDayDaoTest", List())
       val request = DbRequest(intraDayData, "DBActorTest", "save")
 
-      val futureResponse = testObject ? request
+      val futureResponse = testObject1 ? request
       val responseMessage = Await.result(futureResponse, 5 seconds)
 
       responseMessage.asInstanceOf[String] must include ("successfully inserted")
@@ -39,7 +39,7 @@ class DBActorTest extends TestKit(ActorSystem("testSystem"))
     "handling bad format record" in {
       val malFormattedRequest = "abc"
 
-      val futureResponse = testObject ? malFormattedRequest
+      val futureResponse = testObject1 ? malFormattedRequest
       val responseMessage = Await.result(futureResponse, 5 seconds)
 
       responseMessage.asInstanceOf[String] must include ("malFormatted request")

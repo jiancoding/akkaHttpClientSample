@@ -1,40 +1,43 @@
 package client
 
-import akka.actor.{ActorRef, ActorSystem}
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
-import akka.http.scaladsl.server.Directives
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Flow, Sink, Source}
-import akka.util.Timeout
-import model.IntraDayModel.IntraDayRequest
-import hello.HelloActor.{Greeting, Hello}
+import javax.ws.rs.Path
 
-import scala.concurrent.Future
+import akka.actor.ActorRef
+import akka.http.scaladsl.server.Directives
+import akka.util.Timeout
+import com.typesafe.scalalogging.LazyLogging
+import io.swagger.annotations._
+import model.StockRequest._
+
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-class TimeSeriesIntraDayService extends Directives{
+//todo create service to handle post csv files or post request of symbol
 
-  implicit val system = ActorSystem()
-  implicit val executor = system.dispatcher
-  implicit val materializer = ActorMaterializer()
-
-  val baseUrl = "https://www.alphavantage.co/query?"
+@Api(value = "/stock", produces = "application/json")
+@Path("/stock")
+class TimeSeriesIntraDayService(actor: ActorRef) (implicit executionContext: ExecutionContext)
+  extends Directives with LazyLogging {
   implicit val timeout = Timeout(2.seconds)
-  val route = getData()
-  lazy val apiConnectionFlow: Flow[HttpRequest, HttpResponse, Any] =
-    Http().outgoingConnection(baseUrl)
 
-  def apiRequest(request: HttpRequest): Future[HttpResponse] = Source.single(request).via(apiConnectionFlow).runWith(Sink.head)
-
-  def getData() =
-    parameters('function, 'symbol, 'interval, 'apiKey) { (function, symbol,interval, apiKey ) =>
-
-     complete(s"The color is '$function' and the background is '$symbol'")
+  val route = getStockSymbols
+  @ApiOperation(value = "post stock request", nickname = "postStockRequest", httpMethod = "POST")
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "body", value = "stock-symbols interested", required = true,
+      dataTypeClass = classOf[StockRequest], paramType = "body")
+  ))
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Posting stock request successfully"),
+    new ApiResponse(code = 400, message = "Bad request"),
+    new ApiResponse(code = 500, message = "Internal server error")
+  ))
+  def getStockSymbols = path("stock") {
+    post {
+      entity(as[StockRequest]) { request =>
+        logger.info(s"TimeSeriesIntraDayService request: ............" ,request.toString)
+        actor ! request
+        complete("success!")
+      }
+    }
   }
-
-
-
-
-
 }
