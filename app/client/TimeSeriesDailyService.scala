@@ -16,7 +16,7 @@ import scala.concurrent.duration._
 
 @Api(value = "/stock", produces = "application/json")
 @Path("/stock")
-class TimeSeriesIntraDayService(actor: ActorRef) (implicit executionContext: ExecutionContext)
+class TimeSeriesDailyService(actor: ActorRef)(implicit executionContext: ExecutionContext)
   extends Directives with LazyLogging {
   implicit val timeout = Timeout(2.seconds)
 
@@ -24,7 +24,7 @@ class TimeSeriesIntraDayService(actor: ActorRef) (implicit executionContext: Exe
   @ApiOperation(value = "post stock request", nickname = "postStockRequest", httpMethod = "POST")
   @ApiImplicitParams(Array(
     new ApiImplicitParam(name = "body", value = "stock-symbols interested", required = true,
-      dataTypeClass = classOf[StockRequest], paramType = "body")
+      dataTypeClass = classOf[DailyStockRequest], paramType = "body")
   ))
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Posting stock request successfully"),
@@ -33,7 +33,7 @@ class TimeSeriesIntraDayService(actor: ActorRef) (implicit executionContext: Exe
   ))
   def getStockSymbols = path("stock") {
     post {
-      entity(as[StockRequest]) { request =>
+      entity(as[DailyStockRequest]) { request =>
         logger.info(s"TimeSeriesIntraDayService request: ............" ,request.toString)
         actor ! request
         complete("success!")

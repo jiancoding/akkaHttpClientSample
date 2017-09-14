@@ -7,7 +7,7 @@ import akka.util.Timeout
 import client.RestClientActor
 import com.typesafe.config.Config
 import helper.TestDBProvider
-import model.StockRequest.StockRequest
+import model.StockRequest.DailyStockRequest
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, MustMatchers, WordSpecLike}
@@ -38,7 +38,7 @@ class RestClientActorTest extends TestKit(ActorSystem("testSystem"))
   "RestClientActorTest" must {
 
     "handle intraday stockRequest with correct function parameters successfully" in {
-      val request = StockRequest("TIME_SERIES_INTRADAY", "MSFT", "1min")
+      val request = DailyStockRequest("TIME_SERIES_INTRADAY", "MSFT")
       val futureResponse = testObject ? request
 
       val response = Await.result(futureResponse, 5 seconds)
@@ -46,7 +46,7 @@ class RestClientActorTest extends TestKit(ActorSystem("testSystem"))
     }
 
     "handle daily stockRequest with correct parameters successfully" in {
-      val request = StockRequest("TIME_SERIES_DAILY", "MSFT", "")
+      val request = DailyStockRequest("TIME_SERIES_DAILY", "MSFT")
       val futureResponse = testObject ? request
 
       val response = Await.result(futureResponse, 5 seconds)

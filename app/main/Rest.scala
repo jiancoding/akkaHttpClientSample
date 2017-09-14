@@ -6,7 +6,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.RouteConcatenation
 import akka.stream.ActorMaterializer
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
-import client.{TimeSeriesIntraDayActor, TimeSeriesIntraDayService}
+import client.{TimeSeriesDailyActor, TimeSeriesDailyService}
 import com.google.inject.Guice
 import com.typesafe.config.Config
 import hello.{HelloActor, HelloService}
@@ -30,13 +30,13 @@ object Rest extends App with RouteConcatenation with SwaggerSite {
   val add = system.actorOf(Props[AddActor])
   val hello = system.actorOf(Props[HelloActor])
   val dbActor = system.actorOf(Props(new DBActor(db)))
-  val timeSeriesIntraDayActor = system.actorOf(Props(new TimeSeriesIntraDayActor(config, dbActor)))
+  val timeSeriesIntraDayActor = system.actorOf(Props(new TimeSeriesDailyActor(config, dbActor)))
 
   val routes =
     cors()(
       new AddService(add).route ~
         new HelloService(hello).route ~
-        new TimeSeriesIntraDayService(timeSeriesIntraDayActor).route ~
+        new TimeSeriesDailyService(timeSeriesIntraDayActor).route ~
         swaggerSiteRoute ~
         SwaggerDocService.routes)
 

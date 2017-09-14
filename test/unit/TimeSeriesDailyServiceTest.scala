@@ -3,7 +3,7 @@ package unit
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.testkit.TestActorRef
-import client.{TimeSeriesIntraDayActor, TimeSeriesIntraDayService}
+import client.{TimeSeriesDailyActor, TimeSeriesDailyService}
 import com.typesafe.config.Config
 import helper.TestDBProvider
 import mongoDB.DBActor
@@ -13,7 +13,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Matchers, WordSpecL
 import spray.json._
 
 
-class TimeSeriesIntraDayServiceTest
+class TimeSeriesDailyServiceTest
 //  extends TestKit(ActorSystem("testSystem"))
   extends Matchers
     with WordSpecLike
@@ -25,8 +25,8 @@ class TimeSeriesIntraDayServiceTest
 
   val mockConfig = mock[Config]
   val dbActor = TestActorRef(new DBActor(db))
-  val intraDayActor = TestActorRef(new TimeSeriesIntraDayActor(mockConfig, dbActor))
-  val testRoutes = new TimeSeriesIntraDayService(intraDayActor).route
+  val intraDayActor = TestActorRef(new TimeSeriesDailyActor(mockConfig, dbActor))
+  val testRoutes = new TimeSeriesDailyService(intraDayActor).route
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -50,9 +50,7 @@ class TimeSeriesIntraDayServiceTest
       Post("/stock", jsonData) ~> testRoutes ~> check {
         responseAs[String] shouldEqual "success!"
       }
-
     }
+
   }
-
-
 }

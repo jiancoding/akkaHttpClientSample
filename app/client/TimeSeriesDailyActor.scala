@@ -10,14 +10,14 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import com.typesafe.config.Config
 import model.IntraDayModel._
-import model.StockRequest.StockRequest
+import model.StockRequest.DailyStockRequest
 import model.{DbRequest, IntraDayData}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class TimeSeriesIntraDayActor @Inject()(config: Config, dbActor: ActorRef)
+class TimeSeriesDailyActor @Inject()(config: Config, dbActor: ActorRef)
   extends Actor
     with ActorLogging {
 
@@ -27,12 +27,11 @@ class TimeSeriesIntraDayActor @Inject()(config: Config, dbActor: ActorRef)
   private lazy val apiKey = config.getString("alpha.vantage.api.key")
 
   override def receive: Receive = {
-    case StockRequest(function, symbol, interval) => {
+    case DailyStockRequest(function, symbol) => {
       log.info("TimeSeriesIntraDayActor request: ............")
       val paraMap = Map(
         "function" -> function,
         "symbol" -> symbol,
-        "interval" -> interval,
         "apikey" -> apiKey
       )
       val baseUrl = config.getString("alpha.vantage.base.url")

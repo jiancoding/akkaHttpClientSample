@@ -10,7 +10,7 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import com.typesafe.config.Config
 import helper.Utilities
-import model.StockRequest.StockRequest
+import model.StockRequest.DailyStockRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -28,7 +28,7 @@ class RestClientActor @Inject()(config: Config)
   private val http = Http(context.system)
 
   override def receive: Receive = {
-    case StockRequest(function, symbol, interval) => {
+    case DailyStockRequest(function, symbol) => {
       log.info("RestClientActor got request ............")
       val paraMap = Map(
         "function" -> function,
@@ -58,10 +58,7 @@ class RestClientActor @Inject()(config: Config)
       val resultString = Await.result(responseString, 5 seconds).toString
       log.info(s"response String $resultString")
 
-
       senderRef ! resultString
-
-
     }
   }
 }
